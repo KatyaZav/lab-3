@@ -45,7 +45,44 @@
     – 5 Практическая работа «Интеграция игровых сервисов в готовое приложение»
 
 Ход работы:
-1)    
+1) Реализовать механизм ловли золота.
+
+Добавлю код поимки золота вагонетке, воспользовавшись интерфейсом.
+```c#
+ private void OnCollisionEnter2D(Collision2D collision)
+    {
+        ICollectable collect = collision.gameObject.GetComponent<ICollectable>();
+        
+        if (collect != null)
+        {
+            collect.Collect();
+        }
+        else
+        {
+            Debug.LogWarning("Catched strange object: " + collision.ToString());
+            Destroy(collision.gameObject);
+        }
+    }
+```
+
+Добавлю код сбора золоту.
+```c#
+[SerializeField] GameObject collectEffectPrefab;
+
+    public void Collect()
+    {
+        var effect = Instantiate(collectEffectPrefab);
+        effect.transform.position = transform.position;
+
+        Debug.Log("Pick gold");
+        Destroy(gameObject);
+    }
+```
+
+Теперь сбор золота выглядит так, как представлено на гифке снизу.
+
+
+2)     
 
 
 ![Видео](https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/1%20task/2.1.gif)
