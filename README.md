@@ -81,7 +81,7 @@
 
 Теперь сбор золота выглядит так, как представлено на гифке снизу.
 
-![Фото](https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/1%20task/3.1.jpg)
+![Фото](https://github.com/KatyaZav/lab-3/blob/main/Screens/1%20task/1.gif)
 
 2)     
 
