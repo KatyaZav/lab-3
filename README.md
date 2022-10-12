@@ -1,14 +1,14 @@
-# Интеграция сервиса для получения данных профиля пользователя.
-Отчет по лабораторной работе #2 выполнила:
+# Реализация интерфейса пользователя.
+Отчет по лабораторной работе #3 выполнила:
 - Завьялова Екатерина Николаевна
 - РИ300023
 Отметка о выполнении заданий (заполняется студентом):
 
 | Задание | Выполнение | Баллы |
 | ------ | ------ | ------ |
-| Задание 1 | * | 60 |
-| Задание 2 | * | 20 |
-| Задание 3 | * | 20 |
+| Задание 1 | # | 60 |
+| Задание 2 | # | 20 |
+| Задание 3 | # | 20 |
 
 знак "*" - задание выполнено; знак "#" - задание не выполнено;
 
@@ -34,187 +34,43 @@
 - Выводы.
 
 ## Цель работы
-создание интерактивного приложения и изучение принципов интеграции в него игровых сервисов.
+интеграция интерфейса пользователя в разрабатываемое интерактивное приложение.
 
 ## Задание 1
-### По теме видео практических работ 1-5 повторить реализацию игры на Unity. Привести описание выполненных действий.
+### Используя видео-материалы практических работ 1-5 повторить реализацию игровых механик:
+    – 1 Практическая работа «Реализация механизма ловли объектов»
+    – 2 Практическая работа «Реализация графического интерфейса с добавлением счетчика очков»
+    – 3 Практическая работа «Уменьшение жизни. Добавление текстур»
+    – 4 Практическая работа «Структурирование исходных файлов в папке»
+    – 5 Практическая работа «Интеграция игровых сервисов в готовое приложение»
+
 Ход работы:
-1) Добавить графику и объекты.
-В моем случае это восклицательный знак, вагонетка, золото и фон.
+1)    
 
-2) Добавить анимацию.
-Я сделала простенькую анимацию вагонетки и спавнера золота (восклицательный знак).
+
 ![Видео](https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/1%20task/2.1.gif)
-![Видео](https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/1%20task/2.2.gif)
-
-3) Добавить перемещение вагонетки через кнопки клавиатуры.
-Добавим кнопки в Input Manager, чтобы их указать в перемещении. Это нужно, чтобы в коде не было прямой привязки к кнопкам.
 ![Фото](https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/1%20task/3.1.jpg)
 
-Движение реализовала в FixedUpdate с использованием transform. 
-```py
-private void Move()
-    {
-        float x = Input.GetAxis("Horizontal");
-        var movement = new Vector2(x, 0);
 
-        transform.Translate(movement * speed * Time.fixedDeltaTime);
-    }
-```
-![Видео](https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/1%20task/3.2.gif)
+```c#
 
-(И это оказалось ошибкой. Подробнее в пункте 5).
-
-4) Сделать передвижение спавнера золота, добавить элемент случайности в его перемещение.
-![Видео](https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/1%20task/4.gif)
-
-Я решила добавить хаотичности движения не только за счет движения в разные стороны, но и с разной скоростью. Сами показатели вероятностей настраиваются из инспектора unity.
-```py
-private IEnumerator Moving()
-    {
-        while (true)
-        {
-            yield return new WaitForFixedUpdate();
-
-            //transform.Translate((new Vector2(movementDirection, 0)) * MaxSpeed * Time.fixedDeltaTime);
-            _rb.AddForce((new Vector2(movementDirection, 0)) * speed * 2);
-
-            if (Random.Range(1, 100) < ChanceChangeDirection)
-            {
-                movementDirection *= -1;
-
-                if (Random.Range(0, 100) < 30)
-                {
-                    speed = Random.Range(0, MaxSpeed);
-                }
-                else if (Random.Range(0, 100) < 5)
-                {
-                    speed = MaxSpeed;
-                }
-            }
-
-            if (Random.Range(0, 100) < ChanceChangeSpeed)
-            {
-                speed = Random.Range(0, MaxSpeed);
-            }
-        }
-    }
 ```
 
-5) Добавить границы карты.
-
-На этом этапе пришлось вернуться к пункту 3, чтобы сделать перемещение физическим, то есть через AddForse. Без этого объекты проходили сквозь границы карты. Решить это можно было бы через код, но тогда всем сущностям пришлось бы прописывать вручную одно и тоже ограничение.
-```py
-private void Move()
-    {
-        float x = Input.GetAxis("Horizontal");
-        var movement = new Vector2(x, 0);
-
-        //Debug.Log(movement);
-        _rb.AddForce(movement * speed);
-        //transform.Translate(movement * speed * Time.fixedDeltaTime);
-    }
-```
-![Видео](https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/1%20task/5.gif)
-
-6) Сделать создание золота из спавнера.
-```py
-private IEnumerator GenerateGold()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(TimeBetweenGold);
-
-            var golden = Instantiate(gold);
-            golden.transform.position = transform.position;           
-        }
-    }
-```
-![Видео](https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/1%20task/6.gif)
-
-7) Сделать исчезновение золота при выходе за карту.
-Я создала пустой объект с триггерным колайдером. На него навесила такой скрипт:
-```py
-private void OnTriggerEnter2D(Collider2D collision)
-    {
-        try
-        {
-            Debug.Log("Deleted " + collision.gameObject.ToString());
-            ICollectable obj = collision.gameObject.GetComponent<ICollectable>();
-            obj.Disapear();
-        }
-        catch(System.Exception e)
-        {
-            Debug.LogWarning("Fall something non ICollectible! " + e + " " + collision.gameObject.ToString());
-            Destroy(collision.gameObject);
-        }
-    }
-```
-Он работает на интерфейсе, который используется в классе золота:
-```py
-public class Gold : MonoBehaviour, ICollectable
-{
-    [SerializeField] GameObject disapearEffectPrefab;
-
-    public void Pick()
-    {
-        Debug.Log("Pick gold");
-        Destroy(gameObject);
-    }
-
-    public void Disapear()
-    {
-        var explosion = Instantiate(disapearEffectPrefab);
-        explosion.transform.position = transform.position;
-        Destroy(gameObject);
-    }
-}
-```
-![Видео](https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/1%20task/6.gif)
 
 ## Задание 2
-### В проект, выполненный в предыдущем задании, добавить систему проверки того, что SDK подключен (доступен в режиме онлайн и отвечает на запросы);
+### Добавить в приложение интерфейс для вывода статуса наличия игрока в сети (онлайн или офлайн).
 
 Ход работы:
-1) Найти и скачать Яндекс SDK.
-
-![Image alt](https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/2%20task/1.jpg)
-
-2) Заполнить карточку игры и выложить ее.
-
-![Image alt](https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/2%20task/2.jpg)
-
-3) Проверить наличие рекламы в игре.
-
-Наличие рекламы в игре покажет, что SDK работает и отвечает на запросы.
-
-![Image alt](https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/2%20task/3.jpg)
-
-Ссылка на игру: https://yandex.ru/games/app/190276?draft=true&lang=ru.
+1) 
 
 ## Задание 3
-### Выполнить:
-
-1 Произвести сравнительный анализ игровых сервисов Яндекс Игры и VK Game;
-2 Дать сравнительную характеристику сервисов, описать функционал;
-3 Описать их методы интеграции с Unity;
-4 Произвести сравнение, сделать выводы;
-5 Подготовить реферат по результатам выполнения пунктов 1-4
+### Реализовать вывод в консоль количества времени отсутствия игрока в сети если пользователь офлайн.
 
 Ход работы:
-1) Найти информацию по платформам.
-2) Оформить полученную информацию в реферат.
 
-https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/3%20task/referat.pdf
 
 ## Выводы
-За лабораторную работу я столкнулась с несколькими проблемами и успешно их решила. 
-Я поняла, что для передвижения лучше использовать физику, а не изменение координат вручную.
-Я попрактиковалась в создании и использовании корутин и интерфейсов, поработала с эффектами. 
 
-Так же для себя я решила, что Яндекс Игры для меня интереснее VK Games, однако в дальнейшем стоило бы добавлять игры на обе платформы. 
-
-Большие сложности вызвал поиск SDK и отправка игры на ЯИгры. У меня не находилась страница игры (ошибка 404) и была вечная загрузка. Мне пришлось писать в техподдержку по этому поводу. Надеюсь, что дальнейшее использование SDK сложностей не вызовет.
 ## Powered by
 
 **BigDigital Team: Denisov | Fadeev | Panov**
