@@ -83,7 +83,54 @@
 
 ![Фото](https://github.com/KatyaZav/lab-3/blob/main/Screens/1%20task/1.gif)
 
-2)     
+2) Добавить UI счетчик очков.
+Начну с создания общего класса, в котором будет храниься вся информация по игроку. Как можно увидеть, в коде есть применение ивентов (событий).
+
+```c#
+public static class Statistics 
+{
+    //public static int RecordCount { get; private set;}
+    public static int GameCount { get; private set; }
+    
+    public static Action<int> UpdateGameCount;
+    public static void AddCount(int count)
+    {
+        GameCount += count;
+        UpdateGameCount?.Invoke(GameCount);
+    }
+}
+```
+
+сделаем подпись на событие в классе UI счетчика очков:
+```c#
+public class CountText : MonoBehaviour
+{
+    TextMeshProUGUI text;
+
+    void Start()
+    {
+        text = GetComponent<TextMeshProUGUI>();//GetComponent<TextMeshPro>();
+        UpdateText(Statistics.GameCount);
+        
+        Statistics.UpdateGameCount += UpdateText;
+    }
+
+    void UpdateText(int count)
+    {
+        text.text = string.Format("Очки: {0}", count);
+    }
+}
+```
+
+Добавим добавление очков в классе золота.
+```c#
+Statistics.AddCount(1);
+```
+
+Осталось добавить сам элемент интерфейса счетчик очков, предварительно настроив канваз. По итогу все выглядит так:
+![Видео](https://github.com/KatyaZav/lab-3/blob/main/Screens/1%20task/2.gif)
+
+3)      
 
 
 ![Видео](https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/1%20task/2.1.gif)
@@ -101,6 +148,9 @@
 Ход работы:
 1) 
 
+У меня есть 2 варианта жизней. что будет более веселым не знаю, но реализовать второй проще. (убавление и вычит)
+
+
 ## Задание 3
 ### Реализовать вывод в консоль количества времени отсутствия игрока в сети если пользователь офлайн.
 
@@ -108,6 +158,8 @@
 
 
 ## Выводы
+Я вспомнила, как работать с событиями, интерфейсами и TMPro. 
+
 
 ## Powered by
 
