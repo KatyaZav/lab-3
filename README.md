@@ -101,7 +101,7 @@ public static class Statistics
 }
 ```
 
-сделаем подпись на событие в классе UI счетчика очков:
+Сделаем подпись на событие в классе UI счетчика очков:
 ```c#
 public class CountText : MonoBehaviour
 {
