@@ -6,7 +6,7 @@
 
 | Задание | Выполнение | Баллы |
 | ------ | ------ | ------ |
-| Задание 1 | # | 60 |
+| Задание 1 | * | 60 |
 | Задание 2 | # | 20 |
 | Задание 3 | # | 20 |
 
@@ -137,13 +137,75 @@ Statistics.AddCount(1);
   2) Шкала - просто отображение жизни. Любой пропуск будет убавлять значение. 
 
 Первое будет более веселым, но реализовать второй вариант проще.
-
-![Фото](https://github.com/KatyaZav/GameDev-lab2/blob/main/Screens/1%20task/3.1.jpg)
-
+Добавим UI слайдер и его изображение. Пропишем ему скрипт:
 
 ```c#
+public class HealthSlider : MonoBehaviour
+{
+    [SerializeField] float MaxHealth;
+    [SerializeField] float waitTime;
+    [SerializeField]float _health;
+    Image image;
+    void Start()
+    {
+        image = GetComponent<Image>();
+        _health = MaxHealth;
 
+        StartCoroutine(SliderWork());
+        Statistics.UpdateGameCount += AddHealth;
+    }
+
+    IEnumerator SliderWork()
+    {
+        while (true)
+        {
+            if (_health <= 0)
+            {
+                Debug.Log("Lose");
+                break;
+            }
+            if (_health < MaxHealth * 0.2)
+                yield return new WaitForSeconds(waitTime * 2);
+            else 
+                yield return new WaitForSeconds(waitTime);
+            
+            _health--;
+            UpdateSlider();
+        }
+    }
+    void UpdateSlider()
+    {
+        image.fillAmount =_health / MaxHealth;
+    }
+
+    void AddHealth(int count)
+    {
+        _health += count * 2;
+
+        if (_health > MaxHealth)
+            _health = MaxHealth + 1;
+
+        UpdateSlider();
+    }
+}
 ```
+
+В итоге я реализовала первый варинт.
+
+![Видео](https://github.com/KatyaZav/lab-3/blob/main/Screens/1%20task/3.gif)
+
+Если полоска доходит до конца, сцена перезагружается.
+
+4) Структурировать исходные файлы.
+Создадим основные папки Animations, Scenes, Texture, Material, Prefab, Scripts. Перед названиями добавим пометку "_", чтобы системные папки были выше остальных.
+
+![Фото](https://github.com/KatyaZav/lab-3/blob/main/Screens/1%20task/4.jpg)
+
+5) Добавить Яндекс плагин в проект.
+
+Найдем пакет плагина и установим его в юнити. Далее добавим на сцену префаб Яндекс Игр. 
+
+![Фото](https://github.com/KatyaZav/lab-3/blob/main/Screens/1%20task/5.jpg)
 
 
 ## Задание 2
